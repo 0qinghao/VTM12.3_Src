@@ -1,0 +1,1 @@
+TemporalSubsampleRatio=1，否则每 8 帧才编码一次
