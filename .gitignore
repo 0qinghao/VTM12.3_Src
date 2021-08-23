@@ -1369,3 +1369,5 @@ deploy
 *.pyc
 /out/
 /doc/_minted-software-manual/
+test/
+doc/

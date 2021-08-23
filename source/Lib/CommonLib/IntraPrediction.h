@@ -66,7 +66,8 @@ static const uint32_t MAX_INTRA_FILTER_DEPTHS=8;
 class IntraPrediction
 {
 protected:
-  Pel      m_refBuffer[MAX_NUM_COMPONENT][NUM_PRED_BUF][(MAX_CU_SIZE * 2 + 1 + MAX_REF_LINE_IDX) * 2];
+ // Pel      m_refBuffer[MAX_NUM_COMPONENT][NUM_PRED_BUF][(MAX_CU_SIZE * 2 + 1 + MAX_REF_LINE_IDX) * 2];
+  Pel      m_refBuffer[MAX_NUM_COMPONENT][NUM_PRED_BUF][(MAX_CU_SIZE * 2 + 1 + MAX_REF_LINE_IDX) * (MAX_CU_SIZE * 2 + 1 + MAX_REF_LINE_IDX)];
   uint32_t m_refBufferStride[MAX_NUM_COMPONENT];
 
 private:
@@ -133,6 +134,10 @@ protected:
   void xFilterReferenceSamples(const Pel *refBufUnfiltered, Pel *refBufFiltered, const CompArea &area, const SPS &sps,
                                int multiRefIdx
   );
+  void xFillReferenceSamplesLIP      ( const CPelBuf &recoBuf,      Pel* refBufUnfiltered, const CompArea &area, const CodingUnit &cu );
+  void xFilterReferenceSamplesLIP(const Pel *refBufUnfiltered, Pel *refBufFiltered, const CompArea &area, const SPS &sps,
+                               int multiRefIdx
+  );
 
   static int getModifiedWideAngle         ( int width, int height, int predMode );
   void setReferenceArrayLengths   ( const CompArea &area );
@@ -147,6 +152,13 @@ public:
   void init                       (ChromaFormat chromaFormatIDC, const unsigned bitDepthY);
 
   // Angular Intra
+  //  int xPredIntraPlanar_loop1      ( const CPelBuf &pSrc, PelBuf &pDst);
+  // int xPredIntraPlanar_loop       ( const CPelBuf &pSrc, PelBuf &pDst, int loop);
+  // int xPredIntraDc_loop1          ( const CPelBuf &pSrc, PelBuf &pDst);
+  // int xPredIntraDc_loop           ( const CPelBuf &pSrc, PelBuf &pDst, int loop);
+  // int xPredIntraAng_loop1         ( const CPelBuf &pSrc, PelBuf &pDst, const ChannelType channelType, const ClpRng &clpRng);
+  // int xPredIntraAng_loop          ( const CPelBuf &pSrc, PelBuf &pDst, const ChannelType channelType, const ClpRng &clpRng, int loop);
+
   void predIntraAng               ( const ComponentID compId, PelBuf &piPred, const PredictionUnit &pu);
   Pel *getPredictorPtr(const ComponentID compId)
   {
@@ -158,6 +170,8 @@ public:
   void xGetLumaRecPixels(const PredictionUnit &pu, CompArea chromaArea);
   /// set parameters from CU data for accessing intra data
   void initIntraPatternChType     (const CodingUnit &cu, const CompArea &area, const bool forceRefFilterFlag = false); // use forceRefFilterFlag to get both filtered and unfiltered buffers
+  void initIntraPatternChTypeLIP     (const CodingUnit &cu, const CompArea &area, const bool forceRefFilterFlag = false); // use forceRefFilterFlag to get both filtered and unfiltered buffers
+
   void initIntraPatternChTypeISP  (const CodingUnit& cu, const CompArea& area, PelBuf& piReco, const bool forceRefFilterFlag = false); // use forceRefFilterFlag to get both filtered and unfiltered buffers
 
   // Matrix-based intra prediction
